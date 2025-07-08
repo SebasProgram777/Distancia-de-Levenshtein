@@ -1,31 +1,22 @@
-def distancia_levenshtein(str1, str2):
-    m, n = len(str1), len(str2)
- 
-    dp = [[0 for _ in range(n+1)] for _ in range(m+1)]
 
-    for i in range(m+1):
-        dp[i][0] = i  
-    for j in range(n+1):
-        dp[0][j] = j  
+def levenshtein_fuerza_bruta(str1, str2):
 
-    for i in range(1, m+1):
-        for j in range(1, n+1):
-            if str1[i-1] == str2[j-1]:
-                dp[i][j] = dp[i-1][j-1]
-            else:
-                dp[i][j] = 1 + min(
-                    dp[i-1][j],    
-                    dp[i][j-1],    
-                    dp[i-1][j-1]   
-                )
+    if len(str1) == 0:
+        return len(str2)
+    if len(str2) == 0:
+        return len(str1)
 
-    print("Matriz DP:")
-    for fila in dp:
-        print(fila)
+    if str1[0] == str2[0]:
+        return levenshtein_fuerza_bruta(str1[1:], str2[1:])
+    
+    return 1 + min(
+        levenshtein_fuerza_bruta(str1[1:], str2),     # eliminar
+        levenshtein_fuerza_bruta(str1, str2[1:]),     # insertar
+        levenshtein_fuerza_bruta(str1[1:], str2[1:])  # reemplazar
+    )
 
-    return dp[m][n]
+# Ejemplo 
+palabra1 = "gato"
+palabra2 = "pato"
+print(f"Distancia entre '{palabra1}' y '{palabra2}':", levenshtein_fuerza_bruta(palabra1, palabra2))
 
-# Ejemplo de su uso
-cadena1 = "carro"
-cadena2 = "carrusel"
-print(f"Distancia entre '{cadena1}' y '{cadena2}':", distancia_levenshtein(cadena1, cadena2))
